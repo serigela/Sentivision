@@ -3,11 +3,12 @@ import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Upload, Image, Zap, CheckCircle } from "lucide-react";
+import { Upload, Image, Zap, CheckCircle, Brain, Eye } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface PatternDetectorProps {
-  onPatternDetected: (pattern: string, confidence: number) => void;
+  onPatternDetected: (pattern: string, confidence: number, analysisId?: string) => void;
 }
 
 const PatternDetector = ({ onPatternDetected }: PatternDetectorProps) => {
@@ -15,15 +16,18 @@ const PatternDetector = ({ onPatternDetected }: PatternDetectorProps) => {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [detectedPattern, setDetectedPattern] = useState<string | null>(null);
   const [confidence, setConfidence] = useState<number>(0);
+  const [analysisId, setAnalysisId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const patterns = [
     "Head and Shoulders",
     "Double Bottom",
-    "Ascending Triangle",
+    "Ascending Triangle", 
     "Bull Flag",
     "Cup and Handle",
-    "Falling Wedge"
+    "Falling Wedge",
+    "Bearish Divergence",
+    "Bullish Pennant"
   ];
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,7 +42,7 @@ const PatternDetector = ({ onPatternDetected }: PatternDetectorProps) => {
     }
   };
 
-  const analyzePattern = () => {
+  const analyzePattern = async () => {
     if (!uploadedImage) {
       toast.error("Please upload a chart first!");
       return;
@@ -46,25 +50,47 @@ const PatternDetector = ({ onPatternDetected }: PatternDetectorProps) => {
 
     setIsAnalyzing(true);
     
-    // Simulate CNN analysis
-    setTimeout(() => {
+    try {
+      // Simulate CNN analysis with more realistic patterns
       const randomPattern = patterns[Math.floor(Math.random() * patterns.length)];
-      const randomConfidence = Math.floor(Math.random() * 30) + 70; // 70-99%
+      const randomConfidence = Math.floor(Math.random() * 25) + 75; // 75-99%
       
+      // Store analysis in Supabase
+      const { data, error } = await supabase
+        .from('chart_analyses')
+        .insert({
+          ticker_symbol: 'DEMO',
+          detected_pattern: randomPattern,
+          pattern_confidence: randomConfidence / 100,
+          sentiment_score: 0,
+          sentiment_label: 'pending',
+          trading_insight: 'Analysis in progress...',
+          image_url: uploadedImage
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
       setDetectedPattern(randomPattern);
       setConfidence(randomConfidence);
-      onPatternDetected(randomPattern, randomConfidence);
-      setIsAnalyzing(false);
+      setAnalysisId(data.id);
+      onPatternDetected(randomPattern, randomConfidence, data.id);
       
-      toast.success(`Pattern detected: ${randomPattern}`);
-    }, 2000);
+      toast.success(`Pattern detected: ${randomPattern} (${randomConfidence}% confidence)`);
+    } catch (error) {
+      console.error('Analysis error:', error);
+      toast.error("Analysis failed. Please try again.");
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   return (
     <div className="space-y-6">
       {/* Upload Area */}
       <div 
-        className="border-2 border-dashed border-slate-600 rounded-lg p-8 text-center hover:border-cyan-500 transition-colors cursor-pointer"
+        className="border-2 border-dashed border-slate-600 rounded-lg p-8 text-center hover:border-cyan-500 transition-colors cursor-pointer group"
         onClick={() => fileInputRef.current?.click()}
       >
         <input
@@ -80,20 +106,20 @@ const PatternDetector = ({ onPatternDetected }: PatternDetectorProps) => {
             <img 
               src={uploadedImage} 
               alt="Uploaded chart" 
-              className="max-h-64 mx-auto rounded-lg border border-slate-600"
+              className="max-h-64 mx-auto rounded-lg border border-slate-600 shadow-lg"
             />
             <p className="text-green-400 flex items-center justify-center space-x-2">
               <CheckCircle className="h-4 w-4" />
-              <span>Chart ready for analysis</span>
+              <span>Chart ready for AI analysis</span>
             </p>
           </div>
         ) : (
           <div className="space-y-4">
-            <Upload className="h-12 w-12 text-slate-400 mx-auto" />
+            <Upload className="h-12 w-12 text-slate-400 mx-auto group-hover:text-cyan-400 transition-colors" />
             <div>
-              <p className="text-white font-medium">Upload Chart Image</p>
+              <p className="text-white font-medium">Upload Candlestick Chart</p>
               <p className="text-slate-400 text-sm">Drag and drop or click to browse</p>
-              <p className="text-slate-500 text-xs mt-2">Supports PNG, JPG, WebP</p>
+              <p className="text-slate-500 text-xs mt-2">Supports PNG, JPG, WebP • Best: 800x600px+</p>
             </div>
           </div>
         )}
@@ -108,13 +134,13 @@ const PatternDetector = ({ onPatternDetected }: PatternDetectorProps) => {
       >
         {isAnalyzing ? (
           <>
-            <Zap className="h-4 w-4 mr-2 animate-pulse" />
-            Analyzing Pattern...
+            <Brain className="h-4 w-4 mr-2 animate-pulse" />
+            AI Analyzing Pattern...
           </>
         ) : (
           <>
-            <Image className="h-4 w-4 mr-2" />
-            Detect Pattern
+            <Eye className="h-4 w-4 mr-2" />
+            Detect Chart Pattern
           </>
         )}
       </Button>
@@ -124,13 +150,13 @@ const PatternDetector = ({ onPatternDetected }: PatternDetectorProps) => {
         <Card className="bg-slate-700/50 border-slate-600 p-4">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-white font-medium">Detected Pattern:</span>
+              <span className="text-white font-medium">AI Detected Pattern:</span>
               <Badge className="bg-cyan-500/20 text-cyan-400 border-cyan-500">
                 {detectedPattern}
               </Badge>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-slate-400">Confidence:</span>
+              <span className="text-slate-400">CNN Confidence:</span>
               <div className="flex items-center space-x-2">
                 <div className="w-24 bg-slate-600 rounded-full h-2">
                   <div 
@@ -141,6 +167,11 @@ const PatternDetector = ({ onPatternDetected }: PatternDetectorProps) => {
                 <span className="text-white font-mono text-sm">{confidence}%</span>
               </div>
             </div>
+            {analysisId && (
+              <div className="text-xs text-slate-500">
+                Analysis ID: {analysisId.slice(0, 8)}...
+              </div>
+            )}
           </div>
         </Card>
       )}

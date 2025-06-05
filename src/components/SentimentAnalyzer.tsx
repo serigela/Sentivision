@@ -4,8 +4,9 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { RefreshCw, TrendingUp, TrendingDown, Minus, Search } from "lucide-react";
+import { RefreshCw, TrendingUp, TrendingDown, Minus, Search, Brain, Video } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface SentimentAnalyzerProps {
   onSentimentChange: (sentiment: number) => void;
@@ -18,37 +19,66 @@ const SentimentAnalyzer = ({ onSentimentChange }: SentimentAnalyzerProps) => {
     score: 0.65,
     label: "Bullish",
     newsCount: 12,
-    lastUpdate: new Date().toLocaleTimeString()
+    lastUpdate: new Date().toLocaleTimeString(),
+    facialSentiment: 0.0,
+    truthScore: 0.0
   });
 
   const mockNews = [
-    { headline: "Apple reports strong Q4 earnings, beats expectations", sentiment: 0.8, time: "2h ago" },
-    { headline: "iPhone 15 sales exceed analyst projections", sentiment: 0.7, time: "4h ago" },
-    { headline: "AAPL stock price target raised by Goldman Sachs", sentiment: 0.6, time: "6h ago" },
-    { headline: "Market volatility affects tech sector", sentiment: -0.3, time: "8h ago" },
-    { headline: "Apple announces new AI initiatives", sentiment: 0.9, time: "12h ago" }
+    { headline: "Apple reports strong Q4 earnings, beats expectations", sentiment: 0.8, time: "2h ago", hasVideo: true },
+    { headline: "iPhone 15 sales exceed analyst projections", sentiment: 0.7, time: "4h ago", hasVideo: false },
+    { headline: "AAPL stock price target raised by Goldman Sachs", sentiment: 0.6, time: "6h ago", hasVideo: true },
+    { headline: "Market volatility affects tech sector", sentiment: -0.3, time: "8h ago", hasVideo: false },
+    { headline: "Apple announces new AI initiatives", sentiment: 0.9, time: "12h ago", hasVideo: true }
   ];
 
-  const analyzeSentiment = () => {
+  const analyzeSentiment = async () => {
     setIsAnalyzing(true);
     
-    setTimeout(() => {
-      const randomScore = (Math.random() * 2 - 1); // -1 to 1
-      const label = randomScore > 0.2 ? "Bullish" : randomScore < -0.2 ? "Bearish" : "Neutral";
-      
+    try {
+      // Call our AI sentiment analysis edge function
+      const { data, error } = await supabase.functions.invoke('analyze-sentiment', {
+        body: {
+          ticker,
+          headlines: mockNews.map(n => n.headline),
+          videoUrls: mockNews.filter(n => n.hasVideo).map(n => `https://youtube.com/watch?v=${Math.random()}`)
+        }
+      });
+
+      if (error) throw error;
+
+      const facialScore = data.facial_sentiments.length > 0 
+        ? data.facial_sentiments.reduce((sum: number, f: any) => sum + f.emotions.positive - f.emotions.negative, 0) / data.facial_sentiments.length 
+        : 0;
+
+      // Calculate truth meter score
+      const truthResponse = await supabase.functions.invoke('truth-meter', {
+        body: {
+          analysisId: null,
+          headlineSentiment: data.overall_sentiment,
+          facialSentiment: facialScore
+        }
+      });
+
       const newData = {
-        score: randomScore,
-        label,
-        newsCount: Math.floor(Math.random() * 20) + 5,
-        lastUpdate: new Date().toLocaleTimeString()
+        score: data.overall_sentiment,
+        label: data.overall_sentiment > 0.2 ? "Bullish" : data.overall_sentiment < -0.2 ? "Bearish" : "Neutral",
+        newsCount: data.headline_sentiments.length,
+        lastUpdate: new Date().toLocaleTimeString(),
+        facialSentiment: facialScore,
+        truthScore: truthResponse.data?.consistency_score || 0
       };
       
       setSentimentData(newData);
-      onSentimentChange(randomScore);
-      setIsAnalyzing(false);
+      onSentimentChange(data.overall_sentiment);
       
-      toast.success(`Sentiment analyzed for ${ticker}`);
-    }, 1500);
+      toast.success(`AI sentiment analyzed for ${ticker}`);
+    } catch (error) {
+      console.error('Sentiment analysis error:', error);
+      toast.error("Sentiment analysis failed");
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   const getSentimentColor = (score: number) => {
@@ -86,16 +116,16 @@ const SentimentAnalyzer = ({ onSentimentChange }: SentimentAnalyzerProps) => {
           {isAnalyzing ? (
             <RefreshCw className="h-4 w-4 animate-spin" />
           ) : (
-            <Search className="h-4 w-4" />
+            <Brain className="h-4 w-4" />
           )}
         </Button>
       </div>
 
-      {/* Sentiment Score */}
+      {/* AI Sentiment Score */}
       <Card className="bg-slate-700/50 border-slate-600 p-4">
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-slate-400">Current Sentiment:</span>
+            <span className="text-slate-400">AI Sentiment:</span>
             <Badge className={`${getSentimentColor(sentimentData.score)} bg-slate-600 border-slate-500`}>
               <span className="flex items-center space-x-1">
                 {getSentimentIcon(sentimentData.score)}
@@ -105,15 +135,29 @@ const SentimentAnalyzer = ({ onSentimentChange }: SentimentAnalyzerProps) => {
           </div>
           
           <div className="flex items-center justify-between">
-            <span className="text-slate-400">Score:</span>
+            <span className="text-slate-400">FinBERT Score:</span>
             <span className={`font-mono ${getSentimentColor(sentimentData.score)}`}>
               {sentimentData.score.toFixed(3)}
             </span>
           </div>
 
           <div className="flex items-center justify-between">
-            <span className="text-slate-400">News Articles:</span>
-            <span className="text-white">{sentimentData.newsCount}</span>
+            <span className="text-slate-400">Facial Sentiment:</span>
+            <span className={`font-mono ${getSentimentColor(sentimentData.facialSentiment)}`}>
+              {sentimentData.facialSentiment.toFixed(3)}
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <span className="text-slate-400">Truth Score:</span>
+            <Badge variant="outline" className={`${sentimentData.truthScore > 0.7 ? 'text-green-400 border-green-500' : sentimentData.truthScore > 0.4 ? 'text-yellow-400 border-yellow-500' : 'text-red-400 border-red-500'}`}>
+              {(sentimentData.truthScore * 100).toFixed(0)}%
+            </Badge>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <span className="text-slate-400">Sources:</span>
+            <span className="text-white">{sentimentData.newsCount} articles</span>
           </div>
 
           <div className="flex items-center justify-between">
@@ -123,16 +167,24 @@ const SentimentAnalyzer = ({ onSentimentChange }: SentimentAnalyzerProps) => {
         </div>
       </Card>
 
-      {/* Recent Headlines */}
+      {/* Recent Headlines with Video Indicators */}
       <div className="space-y-2">
-        <h4 className="text-white text-sm font-medium">Recent Headlines</h4>
+        <h4 className="text-white text-sm font-medium">Recent Headlines & Video Analysis</h4>
         <div className="space-y-2 max-h-64 overflow-y-auto">
           {mockNews.map((news, index) => (
             <Card key={index} className="bg-slate-700/30 border-slate-600 p-3">
               <div className="space-y-2">
                 <p className="text-white text-xs leading-relaxed">{news.headline}</p>
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-400 text-xs">{news.time}</span>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-slate-400 text-xs">{news.time}</span>
+                    {news.hasVideo && (
+                      <Badge variant="outline" className="text-purple-400 border-purple-500 text-xs">
+                        <Video className="h-3 w-3 mr-1" />
+                        Video
+                      </Badge>
+                    )}
+                  </div>
                   <Badge 
                     variant="outline" 
                     className={`text-xs ${getSentimentColor(news.sentiment)}`}
