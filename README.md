@@ -1,73 +1,63 @@
-# Welcome to your Lovable project
+#  Sentivision: Visualize Market Sentiment Through AI
 
-## Project info
+**Sentivision** is an AI-powered tool that fuses **chart pattern recognition** and **financial sentiment analysis** into a single, intuitive dashboard. Upload a candlestick chart, input related news headlines, and get a data-driven trading insight — all powered by deep learning.
 
-**URL**: https://lovable.dev/projects/08634a92-bee8-47ba-a0f6-eacd9363c475
+---
 
-## How can I edit this code?
+##  Features
 
-There are several ways of editing your application.
+-  **Chart Pattern Detection**  
+  Upload a candlestick chart and detect classic technical patterns:
+  - Head & Shoulders  
+  - Double Bottom  
+  - Flags & Pennants  
+  *(CNN-based image classifier)*
 
-**Use Lovable**
+-  **Financial News Sentiment Analysis**  
+  Paste news headlines or summaries and get:
+  - Sentiment polarity (Positive / Neutral / Negative)  
+  - Confidence percentages  
+  *(Transformer-based NLP model: FinBERT or equivalent)*
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/08634a92-bee8-47ba-a0f6-eacd9363c475) and start prompting.
+-  **Insight Generation**  
+  Combines pattern and sentiment analysis to offer actionable trading insights:
+  - “Bearish reversal likely”  
+  - “Bullish continuation supported”  
+  - “Unconfirmed – sentiment/pattern mismatch”
 
-Changes made via Lovable will be committed automatically to this repo.
+-  **Interactive UI (Streamlit)**  
+  - Upload chart images  
+  - Paste news or headlines  
+  - See visual pattern detection + sentiment output  
+  - One-click insight summary
 
-**Use your preferred IDE**
+---
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+##  Tech Stack
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+| Component        | Library/Tool              |
+|------------------|---------------------------|
+|  Chart Analysis | PyTorch / TensorFlow (CNN) |
+|  Sentiment NLP  | HuggingFace Transformers (FinBERT) |
+|  Frontend       | Streamlit                |
+|  Data Feeds     | (Optional) NewsAPI, Alpha Vantage |
+|  Visualization  | Matplotlib / OpenCV      |
 
-Follow these steps:
+---
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+##  Installation & Running Locally
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+```bash
+# Clone the repo
+git clone https://github.com/serigela/Sentivision.git
+cd Sentivision
 
-# Step 3: Install the necessary dependencies.
-npm i
+# (Optional) Create virtual environment
+python -m venv venv
+source venv/bin/activate  # or .\venv\Scripts\activate on Windows
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+# Install dependencies
+pip install -r requirements.txt
 
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/08634a92-bee8-47ba-a0f6-eacd9363c475) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+# Launch the app
+streamlit run app.py
