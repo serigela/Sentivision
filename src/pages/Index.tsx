@@ -13,6 +13,7 @@ import InsightEngine from "@/components/InsightEngine";
 import WhatIfSimulator from "@/components/WhatIfSimulator";
 import MultiAssetComparison from "@/components/MultiAssetComparison";
 import TradeJournal from "@/components/TradeJournal";
+import EnhancedPatternDetector from "@/components/EnhancedPatternDetector";
 
 const Index = () => {
   const [selectedPattern, setSelectedPattern] = useState<string | null>(null);
@@ -33,7 +34,7 @@ const Index = () => {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-white">Sentivision Pro</h1>
-                <p className="text-sm text-slate-400">AI Trading Assistant & Signal Generator</p>
+                <p className="text-sm text-slate-400">Enhanced AI Trading Assistant with Grad-CAM & Real-Time Data</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
@@ -43,10 +44,10 @@ const Index = () => {
               </Badge>
               <Badge variant="outline" className="border-purple-500 text-purple-400">
                 <Shield className="h-3 w-3 mr-1" />
-                Truth Meter
+                Grad-CAM
               </Badge>
               <Badge variant="outline" className="border-cyan-500 text-cyan-400">
-                Multi-Modal AI
+                Enhanced Patterns
               </Badge>
             </div>
           </div>
@@ -81,17 +82,17 @@ const Index = () => {
 
           <TabsContent value="analysis" className="space-y-6">
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-              {/* Left Column - Pattern Detection */}
+              {/* Left Column - Enhanced Pattern Detection */}
               <div className="xl:col-span-2 space-y-6">
                 <Card className="bg-slate-800/50 border-slate-700 backdrop-blur-sm">
                   <CardHeader>
                     <CardTitle className="text-white flex items-center space-x-2">
                       <BarChart3 className="h-5 w-5 text-cyan-400" />
-                      <span>AI Chart Pattern Detection</span>
+                      <span>Enhanced AI Pattern Detection + Grad-CAM</span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <PatternDetector 
+                    <EnhancedPatternDetector 
                       onPatternDetected={(pattern, conf, id) => {
                         setSelectedPattern(pattern);
                         setConfidence(conf);
