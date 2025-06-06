@@ -14,6 +14,7 @@ import WhatIfSimulator from "@/components/WhatIfSimulator";
 import MultiAssetComparison from "@/components/MultiAssetComparison";
 import TradeJournal from "@/components/TradeJournal";
 import EnhancedPatternDetector from "@/components/EnhancedPatternDetector";
+import RealTimeDataFetcher from "@/components/RealTimeDataFetcher";
 
 const Index = () => {
   const [selectedPattern, setSelectedPattern] = useState<string | null>(null);
@@ -21,6 +22,8 @@ const Index = () => {
   const [confidence, setConfidence] = useState<number>(0);
   const [analysisId, setAnalysisId] = useState<string | null>(null);
   const [facialSentiment, setFacialSentiment] = useState<number>(0);
+  const [chartUrl, setChartUrl] = useState<string | null>(null);
+  const [currentTicker, setCurrentTicker] = useState<string>("DEMO");
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
@@ -84,6 +87,24 @@ const Index = () => {
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
               {/* Left Column - Enhanced Pattern Detection */}
               <div className="xl:col-span-2 space-y-6">
+                {/* Real-Time Data Fetcher */}
+                <Card className="bg-slate-800/50 border-slate-700 backdrop-blur-sm">
+                  <CardHeader>
+                    <CardTitle className="text-white flex items-center space-x-2">
+                      <TrendingUp className="h-5 w-5 text-green-400" />
+                      <span>Live Market Data</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <RealTimeDataFetcher 
+                      onChartGenerated={(url, ticker) => {
+                        setChartUrl(url);
+                        setCurrentTicker(ticker);
+                      }}
+                    />
+                  </CardContent>
+                </Card>
+
                 <Card className="bg-slate-800/50 border-slate-700 backdrop-blur-sm">
                   <CardHeader>
                     <CardTitle className="text-white flex items-center space-x-2">
@@ -102,13 +123,14 @@ const Index = () => {
                   </CardContent>
                 </Card>
 
-                {/* AI Insight Engine */}
+                {/* AI Insight Engine with PDF Export */}
                 {selectedPattern && (
                   <InsightEngine
                     pattern={selectedPattern}
                     patternConfidence={confidence}
                     sentiment={sentimentScore}
-                    ticker="DEMO"
+                    ticker={currentTicker}
+                    chartImage={chartUrl || undefined}
                   />
                 )}
 
