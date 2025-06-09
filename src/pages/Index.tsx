@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Upload, TrendingUp, TrendingDown, BarChart3, Brain, Activity, Shield, Clock, Zap, GitCompare, BookOpen, Lightbulb } from "lucide-react";
+import { Upload, TrendingUp, TrendingDown, BarChart3, Brain, Activity, Shield, Clock, Zap, GitCompare, BookOpen, Lightbulb, Camera } from "lucide-react";
 import PatternDetector from "@/components/PatternDetector";
 import SentimentAnalyzer from "@/components/SentimentAnalyzer";
 import SignalOverlay from "@/components/SignalOverlay";
@@ -16,6 +16,7 @@ import TradeJournal from "@/components/TradeJournal";
 import EnhancedPatternDetector from "@/components/EnhancedPatternDetector";
 import RealTimeDataFetcher from "@/components/RealTimeDataFetcher";
 import AnalyticsDashboard from "@/components/analytics/AnalyticsDashboard";
+import EmotionAnalysisPage from "@/components/emotion/EmotionAnalysisPage";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 const Index = () => {
@@ -63,10 +64,14 @@ const Index = () => {
       {/* Main Dashboard */}
       <div className="container mx-auto px-6 py-8">
         <Tabs defaultValue="analysis" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6 bg-slate-800/50 border-slate-700">
+          <TabsList className="grid w-full grid-cols-7 bg-slate-800/50 border-slate-700">
             <TabsTrigger value="analysis" className="data-[state=active]:bg-slate-700">
               <BarChart3 className="h-4 w-4 mr-2" />
               Analysis
+            </TabsTrigger>
+            <TabsTrigger value="emotion" className="data-[state=active]:bg-slate-700">
+              <Camera className="h-4 w-4 mr-2" />
+              Emotion AI
             </TabsTrigger>
             <TabsTrigger value="analytics" className="data-[state=active]:bg-slate-700">
               <TrendingUp className="h-4 w-4 mr-2" />
@@ -223,6 +228,10 @@ const Index = () => {
                 </Card>
               </div>
             </div>
+          </TabsContent>
+
+          <TabsContent value="emotion" className="space-y-6">
+            <EmotionAnalysisPage />
           </TabsContent>
 
           <TabsContent value="analytics" className="space-y-6">

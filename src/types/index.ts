@@ -1,4 +1,3 @@
-
 // Central type definitions for Sentivision
 
 export interface ChartPattern {
@@ -47,4 +46,45 @@ export interface PatternExplanation {
   implications: string;
   tradingStrategy: string;
   riskLevel: 'low' | 'medium' | 'high';
+}
+
+export interface EmotionData {
+  timestamp: number;
+  emotions: {
+    happy: number;
+    sad: number;
+    angry: number;
+    surprised: number;
+    neutral: number;
+    fear: number;
+    disgust: number;
+  };
+  confidence: number;
+}
+
+export interface EmotionSession {
+  id: string;
+  timestamp: number;
+  duration: number; // in seconds
+  dominantEmotion: string;
+  averageConfidence: number;
+  emotionData: EmotionData[];
+  insights: {
+    peaks: Array<{ emotion: string; value: number; timestamp: number }>;
+    avgEmotions: Record<string, number>;
+  };
+}
+
+export interface EmotionAnalysisConfig {
+  detectionInterval: number; // milliseconds
+  confidenceThreshold: number;
+  enableFacialLandmarks: boolean;
+  enableHeatmaps: boolean;
+}
+
+export interface VideoProcessingStatus {
+  stage: 'uploading' | 'processing' | 'analyzing' | 'complete' | 'error';
+  progress: number;
+  message: string;
+  error?: string;
 }
