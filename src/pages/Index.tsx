@@ -15,6 +15,7 @@ import MultiAssetComparison from "@/components/MultiAssetComparison";
 import TradeJournal from "@/components/TradeJournal";
 import EnhancedPatternDetector from "@/components/EnhancedPatternDetector";
 import RealTimeDataFetcher from "@/components/RealTimeDataFetcher";
+import AnalyticsDashboard from "@/components/analytics/AnalyticsDashboard";
 
 const Index = () => {
   const [selectedPattern, setSelectedPattern] = useState<string | null>(null);
@@ -37,7 +38,7 @@ const Index = () => {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-white">Sentivision Pro</h1>
-                <p className="text-sm text-slate-400">Enhanced AI Trading Assistant with Grad-CAM & Real-Time Data</p>
+                <p className="text-sm text-slate-400">Enhanced AI Trading Assistant with Analytics & Deployment</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
@@ -47,10 +48,10 @@ const Index = () => {
               </Badge>
               <Badge variant="outline" className="border-purple-500 text-purple-400">
                 <Shield className="h-3 w-3 mr-1" />
-                Grad-CAM
+                Analytics
               </Badge>
               <Badge variant="outline" className="border-cyan-500 text-cyan-400">
-                Enhanced Patterns
+                Production Ready
               </Badge>
             </div>
           </div>
@@ -60,10 +61,14 @@ const Index = () => {
       {/* Main Dashboard */}
       <div className="container mx-auto px-6 py-8">
         <Tabs defaultValue="analysis" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 bg-slate-800/50 border-slate-700">
+          <TabsList className="grid w-full grid-cols-6 bg-slate-800/50 border-slate-700">
             <TabsTrigger value="analysis" className="data-[state=active]:bg-slate-700">
               <BarChart3 className="h-4 w-4 mr-2" />
               Analysis
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="data-[state=active]:bg-slate-700">
+              <TrendingUp className="h-4 w-4 mr-2" />
+              Analytics
             </TabsTrigger>
             <TabsTrigger value="simulation" className="data-[state=active]:bg-slate-700">
               <Lightbulb className="h-4 w-4 mr-2" />
@@ -216,6 +221,10 @@ const Index = () => {
                 </Card>
               </div>
             </div>
+          </TabsContent>
+
+          <TabsContent value="analytics" className="space-y-6">
+            <AnalyticsDashboard />
           </TabsContent>
 
           <TabsContent value="simulation" className="space-y-6">
