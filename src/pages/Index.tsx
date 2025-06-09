@@ -16,6 +16,7 @@ import TradeJournal from "@/components/TradeJournal";
 import EnhancedPatternDetector from "@/components/EnhancedPatternDetector";
 import RealTimeDataFetcher from "@/components/RealTimeDataFetcher";
 import AnalyticsDashboard from "@/components/analytics/AnalyticsDashboard";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const Index = () => {
   const [selectedPattern, setSelectedPattern] = useState<string | null>(null);
@@ -28,7 +29,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {/* Header */}
+      {/* Enhanced Header with Theme Toggle */}
       <div className="border-b border-slate-700 bg-slate-900/50 backdrop-blur-sm">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
@@ -53,6 +54,7 @@ const Index = () => {
               <Badge variant="outline" className="border-cyan-500 text-cyan-400">
                 Production Ready
               </Badge>
+              <ThemeToggle />
             </div>
           </div>
         </div>
