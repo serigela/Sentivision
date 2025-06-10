@@ -1,3 +1,4 @@
+
 // Central type definitions for Sentivision
 
 export interface ChartPattern {
@@ -87,4 +88,37 @@ export interface VideoProcessingStatus {
   progress: number;
   message: string;
   error?: string;
+}
+
+// Subscription-related types
+export interface SubscriptionData {
+  subscribed: boolean;
+  subscription_tier?: 'Basic' | 'Pro' | 'Enterprise';
+  subscription_end?: string;
+  stripe_customer_id?: string;
+}
+
+export interface SubscriptionPlan {
+  id: string;
+  name: string;
+  price: number;
+  interval: 'month' | 'year';
+  features: string[];
+  popular?: boolean;
+  stripePriceId?: string;
+}
+
+export interface UsageLimit {
+  emotionAnalyses: number;
+  videoUploads: number;
+  exportReports: number;
+  realtimeMinutes: number;
+}
+
+export interface UserUsage {
+  emotionAnalysesUsed: number;
+  videoUploadsUsed: number;
+  exportReportsUsed: number;
+  realtimeMinutesUsed: number;
+  resetDate: string;
 }

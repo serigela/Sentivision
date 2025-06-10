@@ -119,21 +119,6 @@ const SessionHistory = ({ onSessionSelect }: SessionHistoryProps) => {
     toast.info(`Viewing session from ${formatDate(session.timestamp)}`);
   };
 
-  // Add a function to save new sessions (to be called from parent component)
-  const saveSession = (sessionData: Omit<EmotionSession, 'id'>) => {
-    const newSession: EmotionSession = {
-      ...sessionData,
-      id: `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-    };
-    setSessions(prev => [newSession, ...prev]);
-    return newSession;
-  };
-
-  // Expose saveSession through a ref or callback
-  React.useImperativeHandle(React.forwardRef(() => null), () => ({
-    saveSession
-  }));
-
   return (
     <Card className="bg-slate-800/50 border-slate-700">
       <CardHeader>
