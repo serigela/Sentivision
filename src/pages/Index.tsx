@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,6 +13,7 @@ import TruthMeter from "@/components/TruthMeter";
 import EmotionAnalysisPage from "@/components/emotion/EmotionAnalysisPage";
 import SubscriptionPage from "@/components/subscription/SubscriptionPage";
 import TierAccess from "@/components/TierAccess";
+import UserMenu from "@/components/UserMenu";
 import { useUserTier } from "@/hooks/useUserTier";
 import { SentimentData } from "@/types";
 
@@ -48,40 +50,47 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
-            Senti<span className="text-cyan-400">vision</span>
-          </h1>
-          <p className="text-xl text-slate-300 mb-6">
-            AI-Powered Chart Pattern Recognition + Sentiment Analysis
-          </p>
-          <div className="flex flex-wrap justify-center gap-2 mb-4">
-            <Badge variant="outline" className="text-cyan-400 border-cyan-500">
-              CNN Pattern Detection
-            </Badge>
-            <Badge variant="outline" className="text-green-400 border-green-500">
-              NLP Sentiment Analysis
-            </Badge>
-            <Badge variant="outline" className="text-purple-400 border-purple-500">
-              Truth Meter
-            </Badge>
-            <Badge variant="outline" className="text-yellow-400 border-yellow-500">
-              Emotion AI
-            </Badge>
+        {/* Header with Navigation */}
+        <div className="flex justify-between items-center mb-8">
+          <div className="text-center flex-1">
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
+              Senti<span className="text-cyan-400">vision</span>
+            </h1>
+            <p className="text-xl text-slate-300 mb-6">
+              AI-Powered Chart Pattern Recognition + Sentiment Analysis
+            </p>
+            <div className="flex flex-wrap justify-center gap-2 mb-4">
+              <Badge variant="outline" className="text-cyan-400 border-cyan-500">
+                CNN Pattern Detection
+              </Badge>
+              <Badge variant="outline" className="text-green-400 border-green-500">
+                NLP Sentiment Analysis
+              </Badge>
+              <Badge variant="outline" className="text-purple-400 border-purple-500">
+                Truth Meter
+              </Badge>
+              <Badge variant="outline" className="text-yellow-400 border-yellow-500">
+                Emotion AI
+              </Badge>
+            </div>
+            
+            {/* Pro Dashboard Link */}
+            {isProUser && (
+              <Button 
+                onClick={() => navigate('/pro-dashboard')}
+                className="bg-yellow-500 hover:bg-yellow-600 text-black mb-4"
+              >
+                <Crown className="h-4 w-4 mr-2" />
+                Open Pro Dashboard
+                <ExternalLink className="h-4 w-4 ml-2" />
+              </Button>
+            )}
           </div>
           
-          {/* Pro Dashboard Link */}
-          {isProUser && (
-            <Button 
-              onClick={() => navigate('/pro-dashboard')}
-              className="bg-yellow-500 hover:bg-yellow-600 text-black mb-4"
-            >
-              <Crown className="h-4 w-4 mr-2" />
-              Open Pro Dashboard
-              <ExternalLink className="h-4 w-4 ml-2" />
-            </Button>
-          )}
+          {/* User Menu */}
+          <div className="absolute top-6 right-6">
+            <UserMenu />
+          </div>
         </div>
 
         {/* Main Tabs */}
