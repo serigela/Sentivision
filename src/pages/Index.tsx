@@ -28,8 +28,16 @@ const Index = () => {
     console.log("File processed:", data);
   };
 
-  const handleSentimentChange = (data: SentimentData) => {
-    setSentimentData(data);
+  const handleSentimentChange = (sentiment: number) => {
+    setSentimentData(prev => ({
+      ...prev,
+      score: sentiment,
+      lastUpdate: new Date().toISOString()
+    }));
+  };
+
+  const handlePatternDetected = (pattern: any) => {
+    console.log("Pattern detected:", pattern);
   };
 
   return (
@@ -115,7 +123,7 @@ const Index = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <PatternDetector />
+                  <PatternDetector onPatternDetected={handlePatternDetected} />
                 </CardContent>
               </Card>
             </div>
