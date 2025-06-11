@@ -10,9 +10,27 @@ import SentimentAnalyzer from "@/components/SentimentAnalyzer";
 import TruthMeter from "@/components/TruthMeter";
 import EmotionAnalysisPage from "@/components/emotion/EmotionAnalysisPage";
 import SubscriptionPage from "@/components/subscription/SubscriptionPage";
+import { SentimentData } from "@/types";
 
 const Index = () => {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [sentimentData, setSentimentData] = useState<SentimentData>({
+    score: 0,
+    label: "neutral",
+    confidence: 0,
+    newsCount: 0,
+    lastUpdate: new Date().toISOString(),
+    facialSentiment: 0,
+    truthScore: 0.5
+  });
+
+  const handleFileProcessed = (data: any) => {
+    console.log("File processed:", data);
+  };
+
+  const handleSentimentChange = (data: SentimentData) => {
+    setSentimentData(data);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
@@ -82,7 +100,10 @@ const Index = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <DragDropUpload onFileUpload={setUploadedFile} />
+                  <DragDropUpload 
+                    onFileUpload={setUploadedFile} 
+                    onFileProcessed={handleFileProcessed}
+                  />
                 </CardContent>
               </Card>
 
@@ -94,7 +115,7 @@ const Index = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <PatternDetector uploadedFile={uploadedFile} />
+                  <PatternDetector />
                 </CardContent>
               </Card>
             </div>
@@ -102,12 +123,16 @@ const Index = () => {
 
           {/* Sentiment Analysis Tab */}
           <TabsContent value="sentiment" className="space-y-6">
-            <SentimentAnalyzer />
+            <SentimentAnalyzer onSentimentChange={handleSentimentChange} />
           </TabsContent>
 
           {/* Truth Meter Tab */}
           <TabsContent value="truth" className="space-y-6">
-            <TruthMeter />
+            <TruthMeter 
+              headlineSentiment={sentimentData.score}
+              facialSentiment={sentimentData.facialSentiment}
+              consistencyScore={sentimentData.truthScore}
+            />
           </TabsContent>
 
           {/* Emotion AI Tab */}
