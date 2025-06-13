@@ -1,14 +1,15 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Card, CardProps } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 
-interface AnimatedCardProps extends CardProps {
+interface AnimatedCardProps {
   delay?: number;
   children: React.ReactNode;
+  className?: string;
 }
 
-const AnimatedCard = ({ delay = 0, children, className, ...props }: AnimatedCardProps) => {
+const AnimatedCard = ({ delay = 0, children, className, ...props }: AnimatedCardProps & React.HTMLAttributes<HTMLDivElement>) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
