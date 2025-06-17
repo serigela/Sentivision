@@ -35,6 +35,9 @@ function App() {
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/auth" element={<AuthPage />} />
+                  <Route path="/analytics" element={<AnalyticsPage />} />
+                  <Route path="/insights" element={<InsightsPage />} />
+                  <Route path="/profile" element={<ProfilePage />} />
                   <Route path="/pro-dashboard" element={<ProDashboardPage />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
