@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
-import { User, Settings, Crown, Bell, Shield, TrendingUp, BarChart3, Brain } from 'lucide-react';
+import { User, Settings, Bell, Shield, TrendingUp, BarChart3, Brain } from 'lucide-react';
 import AnimatedCard from '@/components/ui/animated-card';
 import { useUserTier } from '@/hooks/useUserTier';
 import { supabase } from '@/integrations/supabase/client';
@@ -103,16 +103,6 @@ const ProfilePage = () => {
                 {tier === 'free' ? 'Free' : tier.charAt(0).toUpperCase() + tier.slice(1)}
               </Badge>
             </div>
-            
-            {tier === 'free' && (
-              <Button 
-                onClick={() => navigate('/?tab=subscription')}
-                className="w-full bg-yellow-500 hover:bg-yellow-600 text-black"
-              >
-                <Crown className="h-4 w-4 mr-2" />
-                Upgrade to Pro
-              </Button>
-            )}
           </CardContent>
         </AnimatedCard>
 

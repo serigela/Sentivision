@@ -109,16 +109,6 @@ const UserMenu = () => {
           </DropdownMenuItem>
         )}
 
-        {tier === 'free' && (
-          <DropdownMenuItem 
-            onClick={() => navigate('/?tab=subscription')}
-            className="text-yellow-400 hover:bg-slate-700 cursor-pointer"
-          >
-            <Crown className="h-4 w-4 mr-2" />
-            Upgrade to Pro
-          </DropdownMenuItem>
-        )}
-
         <DropdownMenuItem 
           onClick={() => navigate('/settings')}
           className="text-slate-300 hover:bg-slate-700 cursor-pointer"

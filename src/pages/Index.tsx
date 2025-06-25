@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { BarChart3, TrendingUp, Brain, Video, Crown, ExternalLink } from "lucide-react";
+import { BarChart3, TrendingUp, Brain, Video, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DragDropUpload from "@/components/DragDropUpload";
 import PatternDetector from "@/components/PatternDetector";
@@ -80,7 +80,6 @@ const Index = () => {
                 onClick={() => navigate('/pro-dashboard')}
                 className="bg-yellow-500 hover:bg-yellow-600 text-black mb-4"
               >
-                <Crown className="h-4 w-4 mr-2" />
                 Open Pro Dashboard
                 <ExternalLink className="h-4 w-4 ml-2" />
               </Button>
@@ -95,7 +94,7 @@ const Index = () => {
 
         {/* Main Tabs */}
         <Tabs defaultValue="analysis" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-5 bg-slate-800/50 border border-slate-700">
+          <TabsList className="grid w-full grid-cols-4 bg-slate-800/50 border border-slate-700">
             <TabsTrigger value="analysis" className="flex items-center space-x-2">
               <BarChart3 className="h-4 w-4" />
               <span className="hidden sm:inline">Market Analysis</span>
@@ -115,11 +114,6 @@ const Index = () => {
               <Video className="h-4 w-4" />
               <span className="hidden sm:inline">Emotion AI</span>
               <span className="sm:hidden">Emotion</span>
-            </TabsTrigger>
-            <TabsTrigger value="subscription" className="flex items-center space-x-2">
-              <Crown className="h-4 w-4" />
-              <span className="hidden sm:inline">Pro Plans</span>
-              <span className="sm:hidden">Pro</span>
             </TabsTrigger>
           </TabsList>
 
@@ -191,11 +185,6 @@ const Index = () => {
           {/* Emotion AI Tab */}
           <TabsContent value="emotion" className="space-y-6">
             <EmotionAnalysisPage />
-          </TabsContent>
-
-          {/* Subscription Tab */}
-          <TabsContent value="subscription" className="space-y-6">
-            <SubscriptionPage />
           </TabsContent>
         </Tabs>
       </div>
