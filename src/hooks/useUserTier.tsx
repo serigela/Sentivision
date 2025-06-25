@@ -4,52 +4,36 @@ import { supabase } from '@/integrations/supabase/client';
 import { SubscriptionData } from '@/types';
 
 export const useUserTier = () => {
-  const [tier, setTier] = useState<'free' | 'pro' | 'enterprise'>('free');
-  const [loading, setLoading] = useState(true);
+  const [tier, setTier] = useState<'free' | 'pro' | 'enterprise'>('pro'); // Default to pro for free access
+  const [loading, setLoading] = useState(false); // No loading needed
   const [subscription, setSubscription] = useState<SubscriptionData | null>(null);
 
   useEffect(() => {
-    checkUserTier();
+    // Set everything to pro tier immediately - no restrictions
+    setTier('pro');
+    setLoading(false);
+    setSubscription({
+      subscribed: true,
+      subscription_tier: 'pro',
+      subscription_end: null
+    });
   }, []);
 
   const checkUserTier = async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        setTier('free');
-        setLoading(false);
-        return;
-      }
-
-      const { data, error } = await supabase.functions.invoke('check-subscription', {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`
-        }
-      });
-
-      if (error) throw error;
-      
-      setSubscription(data);
-      
-      if (data.subscribed && data.subscription_tier) {
-        setTier(data.subscription_tier.toLowerCase() as 'free' | 'pro' | 'enterprise');
-      } else {
-        setTier('free');
-      }
-    } catch (error) {
-      console.error('Error checking user tier:', error);
-      setTier('free');
-    } finally {
-      setLoading(false);
-    }
+    // Always return pro tier
+    setTier('pro');
+    setLoading(false);
   };
 
   return {
-    tier,
-    loading,
-    subscription,
-    isProUser: tier === 'pro' || tier === 'enterprise',
+    tier: 'pro' as const, // Always return pro
+    loading: false,
+    subscription: {
+      subscribed: true,
+      subscription_tier: 'pro',
+      subscription_end: null
+    } as SubscriptionData,
+    isProUser: true, // Always true
     refreshTier: checkUserTier
   };
 };

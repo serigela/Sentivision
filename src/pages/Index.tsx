@@ -3,23 +3,18 @@ import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { BarChart3, TrendingUp, Brain, Video, ExternalLink } from "lucide-react";
+import { BarChart3, TrendingUp, Brain, Video } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DragDropUpload from "@/components/DragDropUpload";
 import PatternDetector from "@/components/PatternDetector";
 import SentimentAnalyzer from "@/components/SentimentAnalyzer";
 import TruthMeter from "@/components/TruthMeter";
 import EmotionAnalysisPage from "@/components/emotion/EmotionAnalysisPage";
-import SubscriptionPage from "@/components/subscription/SubscriptionPage";
-import TierAccess from "@/components/TierAccess";
 import UserMenu from "@/components/UserMenu";
-import { useUserTier } from "@/hooks/useUserTier";
 import { SentimentData } from "@/types";
 
 const Index = () => {
   const navigate = useNavigate();
-  const { isProUser } = useUserTier();
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [sentimentData, setSentimentData] = useState<SentimentData>({
     score: 0,
@@ -73,17 +68,6 @@ const Index = () => {
                 Emotion AI
               </Badge>
             </div>
-            
-            {/* Pro Dashboard Link */}
-            {isProUser && (
-              <Button 
-                onClick={() => navigate('/pro-dashboard')}
-                className="bg-yellow-500 hover:bg-yellow-600 text-black mb-4"
-              >
-                Open Pro Dashboard
-                <ExternalLink className="h-4 w-4 ml-2" />
-              </Button>
-            )}
           </div>
           
           {/* User Menu */}
@@ -135,51 +119,32 @@ const Index = () => {
                 </CardContent>
               </Card>
 
-              <TierAccess 
-                requiredTier="pro" 
-                feature="Advanced Pattern Analysis"
-                description="Unlock batch uploads, confidence scoring, and detailed insights"
-              >
-                <Card className="bg-slate-800/50 border-slate-700">
-                  <CardHeader>
-                    <CardTitle className="text-white flex items-center space-x-2">
-                      <Brain className="h-5 w-5 text-green-400" />
-                      <span>AI Pattern Analysis</span>
-                      <Badge variant="outline" className="text-yellow-400 border-yellow-500">Pro</Badge>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <PatternDetector onPatternDetected={handlePatternDetected} />
-                  </CardContent>
-                </Card>
-              </TierAccess>
+              <Card className="bg-slate-800/50 border-slate-700">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center space-x-2">
+                    <Brain className="h-5 w-5 text-green-400" />
+                    <span>AI Pattern Analysis</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <PatternDetector onPatternDetected={handlePatternDetected} />
+                </CardContent>
+              </Card>
             </div>
           </TabsContent>
 
           {/* Sentiment Analysis Tab */}
           <TabsContent value="sentiment" className="space-y-6">
-            <TierAccess 
-              requiredTier="pro" 
-              feature="Advanced Sentiment Analysis"
-              description="Multi-source sentiment tracking with real-time updates"
-            >
-              <SentimentAnalyzer onSentimentChange={handleSentimentChange} />
-            </TierAccess>
+            <SentimentAnalyzer onSentimentChange={handleSentimentChange} />
           </TabsContent>
 
           {/* Truth Meter Tab */}
           <TabsContent value="truth" className="space-y-6">
-            <TierAccess 
-              requiredTier="pro" 
-              feature="Truth Meter Analytics"
-              description="Cross-reference facial sentiment with news sentiment"
-            >
-              <TruthMeter 
-                headlineSentiment={sentimentData.score}
-                facialSentiment={sentimentData.facialSentiment}
-                consistencyScore={sentimentData.truthScore}
-              />
-            </TierAccess>
+            <TruthMeter 
+              headlineSentiment={sentimentData.score}
+              facialSentiment={sentimentData.facialSentiment}
+              consistencyScore={sentimentData.truthScore}
+            />
           </TabsContent>
 
           {/* Emotion AI Tab */}

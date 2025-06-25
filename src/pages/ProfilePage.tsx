@@ -3,19 +3,15 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { User, Settings, Bell, Shield, TrendingUp, BarChart3, Brain } from 'lucide-react';
 import AnimatedCard from '@/components/ui/animated-card';
-import { useUserTier } from '@/hooks/useUserTier';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 
 const ProfilePage = () => {
   const navigate = useNavigate();
-  const { tier, subscription } = useUserTier();
   const [user, setUser] = React.useState<any>(null);
   const [notifications, setNotifications] = useState({
     tradingAlerts: true,
@@ -48,14 +44,6 @@ const ProfilePage = () => {
     accuracyRate: 84.2,
     profitableSignals: 156,
     joinDate: 'Jan 2024'
-  };
-
-  const getTierColor = () => {
-    switch (tier) {
-      case 'pro': return 'bg-yellow-500 text-black';
-      case 'enterprise': return 'bg-purple-500 text-white';
-      default: return 'bg-slate-600 text-slate-200';
-    }
   };
 
   if (!user) {
@@ -99,9 +87,6 @@ const ProfilePage = () => {
                 <h3 className="text-white font-medium">{user.email}</h3>
                 <p className="text-slate-400 text-sm">Member since {stats.joinDate}</p>
               </div>
-              <Badge className={getTierColor()}>
-                {tier === 'free' ? 'Free' : tier.charAt(0).toUpperCase() + tier.slice(1)}
-              </Badge>
             </div>
           </CardContent>
         </AnimatedCard>
